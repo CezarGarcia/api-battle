@@ -46,7 +46,7 @@ function findById(req) {
 Bun.serve({
   port: PORT,
   maxRequestBodySize: 64 * 1024,
-  idleTimeout: 10,
+  idleTimeout: 120,
   routes: {
     "/fifa": {
       GET: authenticated((req) => sendBody(req, store.listAll())),
