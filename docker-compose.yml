@@ -1,0 +1,8 @@
+services:
+  api:
+    build: .
+    restart: always
+    network_mode: host
+    env_file: .env
+    volumes:
+      - ./data:/app/data

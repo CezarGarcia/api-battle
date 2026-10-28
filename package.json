@@ -1,0 +1,10 @@
+{
+  "name": "api-battle",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "bun src/server.js",
+    "dev": "bun --watch src/server.js",
+    "insert-batch": "bun scripts/insert-batch.js"
+  }
+}

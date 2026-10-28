@@ -1,0 +1,99 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "API Battle - Performances de jogadores na FIFA",
+    "version": "1.0.0",
+    "description": "Todas as rotas exigem o header `Authorization: Bearer <token>`. Respostas grandes são enviadas com gzip quando o cliente envia `Accept-Encoding: gzip`."
+  },
+  "security": [{ "bearerAuth": [] }],
+  "paths": {
+    "/fifa": {
+      "post": {
+        "summary": "Insere um jogador",
+        "description": "Todos os campos do dataset são obrigatórios. O `player_id` é informado pelo cliente e não pode se repetir.",
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Player" } } }
+        },
+        "responses": {
+          "201": { "description": "Jogador inserido", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Player" } } } },
+          "400": { "description": "Dados inválidos", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } } },
+          "401": { "description": "Token ausente ou inválido" },
+          "409": { "description": "Já existe um jogador com esse player_id", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } } },
+          "413": { "description": "Corpo maior que 64 KB" }
+        }
+      },
+      "get": {
+        "summary": "Consulta todos os jogadores",
+        "responses": {
+          "200": { "description": "Todos os jogadores, ordenados por player_id", "content": { "application/json": { "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Player" } } } } },
+          "401": { "description": "Token ausente ou inválido" }
+        }
+      }
+    },
+    "/fifa/count": {
+      "get": {
+        "summary": "Quantidade de jogadores",
+        "responses": {
+          "200": { "description": "Total de jogadores", "content": { "application/json": { "schema": { "type": "object", "properties": { "count": { "type": "integer", "example": 2800 } } } } } },
+          "401": { "description": "Token ausente ou inválido" }
+        }
+      }
+    },
+    "/fifa/id/{id}": {
+      "get": {
+        "summary": "Consulta um jogador pelo player_id",
+        "parameters": [{ "name": "id", "in": "path", "required": true, "description": "Valor da coluna player_id", "schema": { "type": "integer", "example": 1 } }],
+        "responses": {
+          "200": { "description": "Jogador encontrado", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Player" } } } },
+          "404": { "description": "Jogador não encontrado", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } } },
+          "401": { "description": "Token ausente ou inválido" }
+        }
+      }
+    },
+    "/fifa/nat/{exp}": {
+      "get": {
+        "summary": "Consulta jogadores por nacionalidade",
+        "description": "Aplica a regra `nationality = exp`. A comparação é exata, com maiúsculas e minúsculas (ex.: `Brazil`).",
+        "parameters": [{ "name": "exp", "in": "path", "required": true, "description": "Nacionalidade", "schema": { "type": "string", "example": "Brazil" } }],
+        "responses": {
+          "200": { "description": "Jogadores da nacionalidade, ordenados por player_id (lista vazia se nenhum)", "content": { "application/json": { "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Player" } } } } },
+          "401": { "description": "Token ausente ou inválido" }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": { "type": "http", "scheme": "bearer" }
+    },
+    "schemas": {
+      "Player": {
+        "type": "object",
+        "required": ["player_id", "player_name", "age", "nationality", "club", "position", "overall_rating", "potential_rating", "matches_played", "goals", "assists", "minutes_played", "market_value_million_eur", "contract_years_left", "injury_prone", "transfer_risk_level"],
+        "properties": {
+          "player_id": { "type": "integer", "minimum": 0, "example": 1 },
+          "player_name": { "type": "string", "maxLength": 100, "example": "Player_1" },
+          "age": { "type": "integer", "minimum": 0, "example": 23 },
+          "nationality": { "type": "string", "maxLength": 100, "example": "Germany" },
+          "club": { "type": "string", "maxLength": 100, "example": "Liverpool" },
+          "position": { "type": "string", "maxLength": 100, "example": "ST" },
+          "overall_rating": { "type": "integer", "minimum": 0, "example": 65 },
+          "potential_rating": { "type": "integer", "minimum": 0, "example": 87 },
+          "matches_played": { "type": "integer", "minimum": 0, "example": 8 },
+          "goals": { "type": "integer", "minimum": 0, "example": 6 },
+          "assists": { "type": "integer", "minimum": 0, "example": 14 },
+          "minutes_played": { "type": "integer", "minimum": 0, "example": 2976 },
+          "market_value_million_eur": { "type": "number", "minimum": 0, "example": 122.51 },
+          "contract_years_left": { "type": "integer", "minimum": 0, "example": 3 },
+          "injury_prone": { "type": "string", "maxLength": 100, "example": "No" },
+          "transfer_risk_level": { "type": "string", "maxLength": 100, "example": "Low" }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "properties": { "error": { "type": "string" } }
+      }
+    }
+  }
+}

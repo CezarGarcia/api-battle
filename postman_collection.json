@@ -1,0 +1,44 @@
+{
+  "info": {
+    "name": "API Battle - FIFA",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000" },
+    { "key": "token", "value": "troque-este-token" }
+  ],
+  "item": [
+    {
+      "name": "Inserir jogador",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/fifa",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"player_id\": 9999,\n  \"player_name\": \"Player_9999\",\n  \"age\": 23,\n  \"nationality\": \"Brazil\",\n  \"club\": \"Real Madrid\",\n  \"position\": \"ST\",\n  \"overall_rating\": 85,\n  \"potential_rating\": 90,\n  \"matches_played\": 30,\n  \"goals\": 20,\n  \"assists\": 8,\n  \"minutes_played\": 2500,\n  \"market_value_million_eur\": 95.5,\n  \"contract_years_left\": 4,\n  \"injury_prone\": \"No\",\n  \"transfer_risk_level\": \"Low\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Quantidade de jogadores",
+      "request": { "method": "GET", "url": "{{baseUrl}}/fifa/count" }
+    },
+    {
+      "name": "Todos os jogadores",
+      "request": { "method": "GET", "url": "{{baseUrl}}/fifa" }
+    },
+    {
+      "name": "Jogador por id",
+      "request": { "method": "GET", "url": "{{baseUrl}}/fifa/id/1" }
+    },
+    {
+      "name": "Jogadores por nacionalidade",
+      "request": { "method": "GET", "url": "{{baseUrl}}/fifa/nat/Brazil" }
+    }
+  ]
+}
